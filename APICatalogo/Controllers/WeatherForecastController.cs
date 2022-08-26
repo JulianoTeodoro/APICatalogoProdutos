@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace APICatalogo.Controllers
 {
     [ApiController]
+    //[Route("[controller]/{action}")]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
@@ -29,5 +30,11 @@ namespace APICatalogo.Controllers
             })
             .ToArray();
         }
+        /*[HttpGet]
+        public string testando()
+        {
+            return "asd";
+        }*/
+
     }
 }

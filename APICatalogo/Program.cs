@@ -3,11 +3,14 @@ using APICatalogo.Context;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 string mySqlConfiguration = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseMySql(mySqlConfiguration, ServerVersion.AutoDetect(mySqlConfiguration));
 });
+
+builder.Services.AddControllers();
 
 var startup = new Startup(builder.Configuration);
 startup.ConfigureServices(builder.Services);
