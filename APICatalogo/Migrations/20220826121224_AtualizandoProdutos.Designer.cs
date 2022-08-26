@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APICatalogo.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20220825163355_SegundaMigration")]
-    partial class SegundaMigration
+    [Migration("20220826121224_AtualizandoProdutos")]
+    partial class AtualizandoProdutos
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -27,15 +27,19 @@ namespace APICatalogo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("ImagemURL")
-                        .HasColumnType("longtext");
+                    b.Property<string>("ImagemUrl")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
 
                     b.Property<string>("Nome")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
 
                     b.HasKey("CategoriaId");
 
-                    b.ToTable("Categorias");
+                    b.ToTable("categorias");
                 });
 
             modelBuilder.Entity("APICatalogo.Models.Produto", b =>
@@ -48,19 +52,25 @@ namespace APICatalogo.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Descricao")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
-                    b.Property<float>("Estoque")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Estoque")
+                        .HasColumnType("decimal(10,2)");
 
-                    b.Property<string>("ImagemURL")
-                        .HasColumnType("longtext");
+                    b.Property<string>("ImagemUrl")
+                        .IsRequired()
+                        .HasMaxLength(300)
+                        .HasColumnType("varchar(300)");
 
                     b.Property<string>("Nome")
-                        .HasColumnType("longtext");
+                        .IsRequired()
+                        .HasMaxLength(80)
+                        .HasColumnType("varchar(80)");
 
                     b.Property<decimal>("Preco")
-                        .HasColumnType("decimal(65,30)");
+                        .HasColumnType("decimal(10,2)");
 
                     b.Property<DateTime>("dataCadastro")
                         .HasColumnType("datetime(6)");
@@ -69,23 +79,23 @@ namespace APICatalogo.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.ToTable("Produtos");
+                    b.ToTable("produtos");
                 });
 
             modelBuilder.Entity("APICatalogo.Models.Produto", b =>
                 {
-                    b.HasOne("APICatalogo.Models.Categoria", "Categoria")
-                        .WithMany("Produtos")
+                    b.HasOne("APICatalogo.Models.Categoria", "categoria")
+                        .WithMany("produtos")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Categoria");
+                    b.Navigation("categoria");
                 });
 
             modelBuilder.Entity("APICatalogo.Models.Categoria", b =>
                 {
-                    b.Navigation("Produtos");
+                    b.Navigation("produtos");
                 });
 #pragma warning restore 612, 618
         }

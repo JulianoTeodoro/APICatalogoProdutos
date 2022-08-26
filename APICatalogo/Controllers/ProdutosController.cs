@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using APICatalogo.Context;
 using APICatalogo.Models;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 namespace APICatalogo.Controllers
@@ -11,63 +12,65 @@ namespace APICatalogo.Controllers
     public class ProdutosController : ControllerBase
     {
         private readonly AppDbContext _context;
+
         public ProdutosController(AppDbContext context)
         {
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet(Name = "ObterProdutos")]
         public ActionResult<IEnumerable<Produto>> Get()
         {
-            List<Produto> produtos = _context.Produtos.ToList();
-            if (produtos is null)
-            {
-                return NotFound();
-            }
+            var produtos = _context.produtos.ToList();
             return produtos;
         }
 
-        [HttpGet]
-        [Route("{id}", Name = "ObterProduto")]
+        [HttpGet("{id}")]
         public ActionResult<Produto> GetProdutoById(int id)
         {
-            var produto = _context.Produtos.Where(p => p.ProdutoId == id).FirstOrDefault();
-            if(produto is null)
-            {
-                return NotFound("Produto não existe");
-            }
+            var produto = _context.produtos.Where(p => p.ProdutoId == id).FirstOrDefault();
+            if (produto is null) return NotFound();
+
             return produto;
         }
 
         [HttpPost]
         public ActionResult Post(Produto produto)
         {
-            if (produto is null) return BadRequest();
-            _context.Produtos.Add(produto);
+            if (produto == null) return BadRequest();
+
+            _context.produtos.Add(produto);
             _context.SaveChanges();
 
-            return new CreatedAtRouteResult("ObterProduto", new { id = produto.ProdutoId }, produto);
+            return new CreatedAtRouteResult("ObterProdutos", new { id = produto.ProdutoId }, produto);
         }
 
         [HttpPut("{id}")]
-        public ActionResult Put(int id, Produto produto)
+        public ActionResult<Produto> Put(int id, Produto produto)
         {
-            if (id != produto.ProdutoId) return BadRequest();
+            if (id != produto.ProdutoId) return BadRequest("Id diferentes");
 
-            _context.Entry(produto).State = EntityState.Modified;
-            _context.SaveChanges();
+            try
+            {
+                _context.Entry(produto).State = EntityState.Modified;
+                _context.SaveChanges();
+            }
+
+            catch(DbUpdateConcurrencyException)
+            {
+                return BadRequest("Erro de edição");
+            }
 
             return Ok("Produto editado");
         }
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public ActionResult<Produto> Remove(int id)
         {
-            var produto = _context.Produtos.Find(id);
+            var produto = _context.produtos.Where(p => p.ProdutoId == id).FirstOrDefault();
+            if (produto is null) return BadRequest("Produto inexistente");
 
-            if (produto is null) return NotFound("Produto inexistente!");
-
-            _context.Produtos.Remove(produto);
+            _context.produtos.Remove(produto);
             _context.SaveChanges();
 
             return Ok("Produto removido");

@@ -937,26 +937,26 @@
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "Microsoft.EntityFrameworkCore.Design >= 6.0.8",
+      "Microsoft.EntityFrameworkCore >= 6.0.8",
       "Microsoft.EntityFrameworkCore.Tools >= 6.0.8",
       "Pomelo.EntityFrameworkCore.MySql >= 6.0.2",
       "Swashbuckle.AspNetCore >= 6.2.3"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Juliano\\.nuget\\packages\\": {}
+    "C:\\Users\\juliano.teodoro\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Programação\\Projetos\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
+      "projectUniqueName": "C:\\Users\\juliano.teodoro\\source\\repos\\estudos-.net\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
       "projectName": "APICatalogo",
-      "projectPath": "D:\\Programação\\Projetos\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
-      "packagesPath": "C:\\Users\\Juliano\\.nuget\\packages\\",
-      "outputPath": "D:\\Programação\\Projetos\\APICatalogo\\APICatalogo\\obj\\",
+      "projectPath": "C:\\Users\\juliano.teodoro\\source\\repos\\estudos-.net\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
+      "packagesPath": "C:\\Users\\juliano.teodoro\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\juliano.teodoro\\source\\repos\\estudos-.net\\APICatalogo\\APICatalogo\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Juliano\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\juliano.teodoro\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -982,9 +982,7 @@
       "net6.0": {
         "targetAlias": "net6.0",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Design": {
-            "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
-            "suppressParent": "All",
+          "Microsoft.EntityFrameworkCore": {
             "target": "Package",
             "version": "[6.0.8, )"
           },

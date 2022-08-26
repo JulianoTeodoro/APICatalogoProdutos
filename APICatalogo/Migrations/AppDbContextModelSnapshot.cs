@@ -25,7 +25,7 @@ namespace APICatalogo.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("ImagemURL")
+                    b.Property<string>("ImagemUrl")
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("varchar(300)");
@@ -37,7 +37,7 @@ namespace APICatalogo.Migrations
 
                     b.HasKey("CategoriaId");
 
-                    b.ToTable("Categorias");
+                    b.ToTable("categorias");
                 });
 
             modelBuilder.Entity("APICatalogo.Models.Produto", b =>
@@ -51,13 +51,13 @@ namespace APICatalogo.Migrations
 
                     b.Property<string>("Descricao")
                         .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("varchar(300)");
+                        .HasMaxLength(150)
+                        .HasColumnType("varchar(150)");
 
-                    b.Property<float>("Estoque")
-                        .HasColumnType("float");
+                    b.Property<decimal>("Estoque")
+                        .HasColumnType("decimal(10,2)");
 
-                    b.Property<string>("ImagemURL")
+                    b.Property<string>("ImagemUrl")
                         .IsRequired()
                         .HasMaxLength(300)
                         .HasColumnType("varchar(300)");
@@ -77,23 +77,23 @@ namespace APICatalogo.Migrations
 
                     b.HasIndex("CategoriaId");
 
-                    b.ToTable("Produtos");
+                    b.ToTable("produtos");
                 });
 
             modelBuilder.Entity("APICatalogo.Models.Produto", b =>
                 {
-                    b.HasOne("APICatalogo.Models.Categoria", "Categoria")
-                        .WithMany("Produtos")
+                    b.HasOne("APICatalogo.Models.Categoria", "categoria")
+                        .WithMany("produtos")
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Categoria");
+                    b.Navigation("categoria");
                 });
 
             modelBuilder.Entity("APICatalogo.Models.Categoria", b =>
                 {
-                    b.Navigation("Produtos");
+                    b.Navigation("produtos");
                 });
 #pragma warning restore 612, 618
         }

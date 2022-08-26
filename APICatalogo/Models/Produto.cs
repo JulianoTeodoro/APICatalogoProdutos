@@ -3,36 +3,38 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace APICatalogo.Models
 {
-    [Table("Produtos")]
     public class Produto
     {
         [Key]
         public int ProdutoId { get; set; }
 
-        //[Required(ErrorMessage = "Nome é obrigatório")]
         [Required]
-        // [StringLength(80, ErrorMessage = "O maximo de caracteres são 80")]
-        [StringLength(80)] 
+        [StringLength(80)]
         public string? Nome { get; set; }
 
         [Required]
-        [StringLength(300)]
+        [StringLength(150)]
         public string? Descricao { get; set; }
 
         [Required]
-        [Column(TypeName = "decimal(10, 2)")]
+        [Column(TypeName = "decimal(10,2)")]
         public decimal Preco { get; set; }
 
-        //[Required(ErrorMessage = "Imagem é obrigatório")]
-        //[StringLength(80, ErrorMessage = "O maximo de caracteres são 300")]
+        [Required]
+        [Column(TypeName = "decimal(10,2)")]
+        public float Estoque { get; set; }
+
         [Required]
         [StringLength(300)]
-        public string? ImagemURL { get; set; }
-
-        public float Estoque { get; set; }
+        public string? ImagemUrl { get; set; }
+        
         public DateTime dataCadastro { get; set; }
+
         [ForeignKey("CategoriaId")]
         public int CategoriaId { get; set; }
-        public Categoria? Categoria { get; set; }
+        public Categoria? categoria { get; set; }
+
+
+
     }
 }
