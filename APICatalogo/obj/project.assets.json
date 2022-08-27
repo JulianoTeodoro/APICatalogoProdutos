@@ -944,19 +944,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\juliano.teodoro\\.nuget\\packages\\": {}
+    "C:\\Users\\Juliano\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\juliano.teodoro\\source\\repos\\estudos-.net\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
+      "projectUniqueName": "C:\\Users\\Juliano\\Source\\Repos\\APICatalogoProdutos\\APICatalogo\\APICatalogo.csproj",
       "projectName": "APICatalogo",
-      "projectPath": "C:\\Users\\juliano.teodoro\\source\\repos\\estudos-.net\\APICatalogo\\APICatalogo\\APICatalogo.csproj",
-      "packagesPath": "C:\\Users\\juliano.teodoro\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\juliano.teodoro\\source\\repos\\estudos-.net\\APICatalogo\\APICatalogo\\obj\\",
+      "projectPath": "C:\\Users\\Juliano\\Source\\Repos\\APICatalogoProdutos\\APICatalogo\\APICatalogo.csproj",
+      "packagesPath": "C:\\Users\\Juliano\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Juliano\\Source\\Repos\\APICatalogoProdutos\\APICatalogo\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\juliano.teodoro\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\Juliano\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [

@@ -11,7 +11,7 @@ namespace APICatalogo.Controllers
     [ApiController]
     public class ProdutosController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly AppDbContext? _context;
 
         public ProdutosController(AppDbContext context)
         {
@@ -19,41 +19,41 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet(Name = "ObterProdutos")]
-        public ActionResult<IEnumerable<Produto>> Get()
+        public async Task<ActionResult<IEnumerable<Produto>>> Get()
         {
-            var produtos = _context.produtos.ToList();
+            var produtos = await _context.produtos.AsNoTracking().ToListAsync();
             return produtos;
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Produto> GetProdutoById(int id)
+        public async Task<ActionResult<Produto>> GetProdutoById(int id)
         {
-            var produto = _context.produtos.Where(p => p.ProdutoId == id).FirstOrDefault();
+            var produto = await _context.produtos.Where(p => p.ProdutoId == id).AsNoTracking().FirstOrDefaultAsync();
             if (produto is null) return NotFound();
 
             return produto;
         }
 
         [HttpPost]
-        public ActionResult Post(Produto produto)
+        public async Task<ActionResult<Produto>> Post(Produto produto)
         {
             if (produto == null) return BadRequest();
 
             _context.produtos.Add(produto);
-            _context.SaveChanges();
+            _context.SaveChangesAsync();
 
             return new CreatedAtRouteResult("ObterProdutos", new { id = produto.ProdutoId }, produto);
         }
 
         [HttpPut("{id}")]
-        public ActionResult<Produto> Put(int id, Produto produto)
+        public async Task<ActionResult<Produto>> Put(int id, Produto produto)
         {
             if (id != produto.ProdutoId) return BadRequest("Id diferentes");
 
             try
             {
                 _context.Entry(produto).State = EntityState.Modified;
-                _context.SaveChanges();
+                _context.SaveChangesAsync();
             }
 
             catch(DbUpdateConcurrencyException)
@@ -65,13 +65,13 @@ namespace APICatalogo.Controllers
         }
 
         [HttpDelete("{id}")]
-        public ActionResult<Produto> Remove(int id)
+        public async Task<ActionResult<Produto>> Remove(int id)
         {
-            var produto = _context.produtos.Where(p => p.ProdutoId == id).FirstOrDefault();
+            var produto = await _context.produtos.Where(p => p.ProdutoId == id).FirstOrDefaultAsync();
             if (produto is null) return BadRequest("Produto inexistente");
 
             _context.produtos.Remove(produto);
-            _context.SaveChanges();
+            _context.SaveChangesAsync();
 
             return Ok("Produto removido");
         }
