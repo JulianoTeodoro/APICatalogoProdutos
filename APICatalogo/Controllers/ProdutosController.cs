@@ -20,28 +20,54 @@ namespace APICatalogo.Controllers
         [HttpGet(Name = "ObterProdutos")]
         public async Task<ActionResult<IEnumerable<Produto>>> Get()
         {
-            var produtos = await _context.produtos.AsNoTracking().ToListAsync();
-            return produtos;
+            try
+            {
+                var produtos = await _context.produtos.ToListAsync();
+                return produtos;
+            }
+            catch(Exception)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest,
+                    new { message = "Erro ao consultar" });
+            }
         }
 
         [HttpGet("{id:int:min(1):maxlength(5)}")]
         public async Task<ActionResult<Produto>> GetProdutoById(int id)
         {
-            var produto = await _context.produtos.Where(p => p.ProdutoId == id).AsNoTracking().FirstOrDefaultAsync();
-            if (produto is null) return NotFound();
+            try
+            {
+                var produto = await _context.produtos.Where(p => p.ProdutoId == id).FirstOrDefaultAsync();
+                if(produto == null) return StatusCode(StatusCodes.Status400BadRequest,
+                    new { message = "Produto não encontrado" });
 
-            return produto;
+                return produto;
+            }
+            catch(Exception)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, 
+                    new { message = "Produto não encontrado" });
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult<Produto>> Post(Produto produto)
         {
-            if (produto == null) return BadRequest();
+            try
+            {
+                if (produto == null) return BadRequest();
 
-            await _context.produtos.AddAsync(produto);
-            await _context.SaveChangesAsync();
+                await _context.produtos.AddAsync(produto);
+                await _context.SaveChangesAsync();
 
-            return new CreatedAtRouteResult("ObterProdutos", new { id = produto.ProdutoId }, produto);
+                return new CreatedAtRouteResult("ObterProdutos", new { id = produto.ProdutoId }, produto);
+
+            }
+            catch(DbUpdateException)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest,
+                    new { message = "Erro ao criar produto" });
+            }
         }
 
         [HttpPut("{id:int:min(1):maxlength(5)}")]
@@ -77,7 +103,7 @@ namespace APICatalogo.Controllers
                 _context.produtos.Remove(produto);
                 _context.SaveChanges();
 
-                return Ok("Produto removido");
+                return Ok(new { message = "Produto removido" });
             }
             catch(Exception)
             {
