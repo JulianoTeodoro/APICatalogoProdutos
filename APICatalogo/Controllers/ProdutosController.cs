@@ -12,7 +12,6 @@ namespace APICatalogo.Controllers
     public class ProdutosController : ControllerBase
     {
         private readonly AppDbContext? _context;
-
         public ProdutosController(AppDbContext context)
         {
             _context = context;
@@ -25,7 +24,7 @@ namespace APICatalogo.Controllers
             return produtos;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int:min(1):maxlength(5)}")]
         public async Task<ActionResult<Produto>> GetProdutoById(int id)
         {
             var produto = await _context.produtos.Where(p => p.ProdutoId == id).AsNoTracking().FirstOrDefaultAsync();
@@ -39,41 +38,52 @@ namespace APICatalogo.Controllers
         {
             if (produto == null) return BadRequest();
 
-            _context.produtos.Add(produto);
-            _context.SaveChangesAsync();
+            await _context.produtos.AddAsync(produto);
+            await _context.SaveChangesAsync();
 
             return new CreatedAtRouteResult("ObterProdutos", new { id = produto.ProdutoId }, produto);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Produto>> Put(int id, Produto produto)
+        [HttpPut("{id:int:min(1):maxlength(5)}")]
+        public ActionResult<Produto> Put(int id, Produto produto)
         {
-            if (id != produto.ProdutoId) return BadRequest("Id diferentes");
-
             try
             {
+
+                if (id != produto.ProdutoId) return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "ID Diferentes" });
+
                 _context.Entry(produto).State = EntityState.Modified;
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
+
+                return Ok("Produto editado");
             }
 
-            catch(DbUpdateConcurrencyException)
+            catch(DbUpdateException)
             {
-                return BadRequest("Erro de edição");
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "Produto inexistente" });
             }
-
-            return Ok("Produto editado");
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Produto>> Remove(int id)
+        [HttpDelete("{id:int:min(1):maxlength(5)}")]
+        public ActionResult<Produto> Remove(int id)
         {
-            var produto = await _context.produtos.Where(p => p.ProdutoId == id).FirstOrDefaultAsync();
-            if (produto is null) return BadRequest("Produto inexistente");
+            try
+            {
+                var produto = _context.produtos.Where(p => p.ProdutoId == id).FirstOrDefault();
+                if (produto is null) return BadRequest("Produto inexistente");
 
-            _context.produtos.Remove(produto);
-            _context.SaveChangesAsync();
+                _context.produtos.Remove(produto);
+                _context.SaveChanges();
 
-            return Ok("Produto removido");
+                return Ok("Produto removido");
+            }
+            catch(Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "Erro de exclusão" });
+            }
         }
 
     }

@@ -23,7 +23,7 @@ namespace APICatalogo.Controllers
             return categoria;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int:min(1):maxlength(5)}")]
         public async Task<ActionResult<Categoria>> GetById(int id)
         {
             Categoria? categoria = await _context.categorias.AsNoTracking().Where(p => p.CategoriaId == id).FirstOrDefaultAsync();
@@ -43,41 +43,49 @@ namespace APICatalogo.Controllers
         {
             if (categoria is null) return NotFound();
 
-            _context.categorias.Add(categoria);
-            _context.SaveChanges();
+            await _context.categorias.AddAsync(categoria);
+            await _context.SaveChangesAsync();
 
             return new CreatedAtRouteResult("ObterCategoria", new { Id = categoria.CategoriaId }, categoria);
         }
 
-        [HttpPut("{id}")]
-        public async Task<ActionResult<Categoria>> Put(int id, Categoria categoria)
+        [HttpPut("{id:int:min(1):maxlength(5)}")]
+        public ActionResult<Categoria> Put(int id, Categoria categoria)
         {
             if (categoria.CategoriaId != id) return NotFound();
 
             try
             {
                 _context.Entry(categoria).State = EntityState.Modified;
-                _context.SaveChangesAsync();
+                _context.SaveChanges();
+                return Ok(categoria);
             }
-            catch(DbUpdateException)
+            catch (DbUpdateConcurrencyException)
             {
                 return NotFound("Categoria não encontrada");
             }
-
-            return Ok(categoria);
+            
         }
 
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Categoria>> Delete(int id)
+        [HttpDelete("{id:int:min(1):maxlength(5)}")]
+        public ActionResult<Categoria> Delete(int id)
         {
-            var categoria = await _context.categorias.Where(p => p.CategoriaId == id).FirstOrDefaultAsync();
+            try
+            {
+                var categoria = _context.categorias.Where(p => p.CategoriaId == id).FirstOrDefault();
 
-            if (categoria is null) return NotFound("Não encontrado");
+                if (categoria is null) return NotFound("Não encontrado");
 
-            _context.categorias.Remove(categoria);
-            _context.SaveChangesAsync();
+                _context.categorias.Remove(categoria);
+                _context.SaveChanges();
+                return Ok("Produto removido");   
+            }
+            catch(Exception)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    new { message = "Erro de exclusão" });
+            }
 
-            return Ok("Produto removido");
         }
 
     }
