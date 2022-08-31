@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using APICatalogo.Context;
 using APICatalogo.Models;
 using System.Linq;
@@ -38,7 +37,7 @@ namespace APICatalogo.Controllers
             try
             {
                 var produto = await _context.produtos.Where(p => p.ProdutoId == id).FirstOrDefaultAsync();
-                if(produto == null) return StatusCode(StatusCodes.Status400BadRequest,
+                if(produto == null) return StatusCode(StatusCodes.Status404NotFound,
                     new { message = "Produto não encontrado" });
 
                 return produto;
@@ -46,7 +45,7 @@ namespace APICatalogo.Controllers
             catch(Exception)
             {
                 return StatusCode(StatusCodes.Status400BadRequest, 
-                    new { message = "Produto não encontrado" });
+                    new { message = "Erro ao consultar!" });
             }
         }
 
@@ -76,7 +75,7 @@ namespace APICatalogo.Controllers
             try
             {
 
-                if (id != produto.ProdutoId) return StatusCode(StatusCodes.Status500InternalServerError,
+                if (id != produto.ProdutoId) return StatusCode(StatusCodes.Status400BadRequest,
                     new { message = "ID Diferentes" });
 
                 _context.Entry(produto).State = EntityState.Modified;
@@ -87,7 +86,7 @@ namespace APICatalogo.Controllers
 
             catch(DbUpdateException)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,
+                return StatusCode(StatusCodes.Status404NotFound,
                     new { message = "Produto inexistente" });
             }
         }
