@@ -50,7 +50,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Produto>> Post(Produto produto)
+        public async Task<ActionResult<Produto>> Post([FromBody] Produto produto)
         {
             try
             {
@@ -70,7 +70,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpPut("{id:int:min(1):maxlength(5)}")]
-        public ActionResult<Produto> Put(int id, Produto produto)
+        public ActionResult<Produto> Put(int id, [FromBody] Produto produto)
         {
             try
             {
