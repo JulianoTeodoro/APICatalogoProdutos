@@ -3,6 +3,7 @@ using APICatalogo.Context;
 using APICatalogo.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
+using APICatalogo.Filters;
 
 namespace APICatalogo.Controllers
 {
@@ -17,6 +18,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet(Name = "ObterProdutos")]
+        [ServiceFilter(typeof(ApiLoggingFilter))]
         public async Task<ActionResult<IEnumerable<Produto>>> Get()
         {
             try

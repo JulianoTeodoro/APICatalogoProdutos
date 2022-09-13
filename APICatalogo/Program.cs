@@ -1,4 +1,6 @@
 using APICatalogo.Context;
+using APICatalogo.Errors;
+using APICatalogo.Filters;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +21,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(mySqlConfiguration, ServerVersion.AutoDetect(mySqlConfiguration));
 });
 
+builder.Services.AddScoped<ApiLoggingFilter>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -28,6 +32,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.ConfigureExceptionHandler();
 
 app.UseHttpsRedirection();
 app.UseHsts();
