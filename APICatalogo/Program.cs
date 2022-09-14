@@ -1,6 +1,7 @@
 using APICatalogo.Context;
 using APICatalogo.Errors;
 using APICatalogo.Filters;
+using APICatalogo.Repository;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseMySql(mySqlConfiguration, ServerVersion.AutoDetect(mySqlConfiguration));
 });
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ApiLoggingFilter>();
 
 var app = builder.Build();

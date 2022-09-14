@@ -10,9 +10,9 @@ namespace APICatalogo.Repository
 
         }
 
-        public IEnumerable<Produto> GetProdutosByPreco()
+        public IQueryable<Produto> GetProdutosByPreco()
         {
-            return Get().OrderBy(p => p.Preco).ToList();
+            return Get().OrderBy(p => p.Preco);
         }
     }
 }

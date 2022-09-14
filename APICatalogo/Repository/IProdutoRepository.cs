@@ -2,9 +2,9 @@
 
 namespace APICatalogo.Repository
 {
-    interface IProdutoRepository : IRepository<Produto>
+    public interface IProdutoRepository : IRepository<Produto>
     {
-        IEnumerable<Produto> GetProdutosByPreco();
+        IQueryable<Produto> GetProdutosByPreco();
 
     }
 }

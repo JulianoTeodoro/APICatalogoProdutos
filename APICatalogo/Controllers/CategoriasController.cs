@@ -1,6 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using APICatalogo.Context;
-using APICatalogo.Models;
+﻿using APICatalogo.Models;
+using APICatalogo.Repository;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace APICatalogo.Controllers
@@ -9,20 +9,19 @@ namespace APICatalogo.Controllers
     [ApiController]
     public class CategoriasController : Controller
     {
-        private readonly AppDbContext _context;
-        public CategoriasController(AppDbContext context)
+        private readonly IUnitOfWork _uof;
+        public CategoriasController(IUnitOfWork context)
         {
-            _context = context;
+            _uof = context;
         }
 
         [HttpGet(Name = "ObterCategoria")]
-        public async Task<ActionResult<IEnumerable<Categoria>>> Get()
+        public ActionResult<IEnumerable<Categoria>> Get()
         {
            // var categoria = await _context.categorias.Take(10).AsNoTracking().ToListAsync();
            try
             {
-                var categoria = await _context.categorias.ToListAsync();
-                return categoria;
+                return _uof.CategoriaRepository.Get().ToList();
             }
             catch(Exception)
             {
@@ -32,11 +31,11 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet("{id:int:min(1):maxlength(5)}")]
-        public async Task<ActionResult<Categoria>> GetById(int id)
+        public ActionResult<Categoria> GetById(int id)
         {
             try
             {
-                var categoria = await _context.categorias.Where(p => p.CategoriaId == id).FirstOrDefaultAsync();
+                var categoria = _uof.CategoriaRepository.GetById(c => c.CategoriaId == id);
 
                 if (categoria == null) return StatusCode(StatusCodes.Status404NotFound,
                     new { message = "Categoria não encontrada" });
@@ -51,11 +50,11 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet("produtos")]
-        public async Task<ActionResult<IEnumerable<Categoria>>> GetProdutoByCategoria()
+        public ActionResult<IEnumerable<Categoria>> GetProdutoByCategoria()
         {
             try
             {
-                var categoria = await _context.categorias.Include(p => p.produtos).ToListAsync();
+                var categoria = _uof.CategoriaRepository.GetCategoriasProdutos().ToList();
                 return categoria;
             }
             catch (Exception)
@@ -66,14 +65,14 @@ namespace APICatalogo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Categoria>> Post(Categoria categoria)
+        public ActionResult<Categoria> Post([FromBody] Categoria categoria)
         {
             try
             {
-                if (categoria is null) return NotFound();
+                if (!ModelState.IsValid) return BadRequest(ModelState);
 
-                await _context.categorias.AddAsync(categoria);
-                await _context.SaveChangesAsync();
+                _uof.CategoriaRepository.Add(categoria);
+                _uof.Commit();
 
                 return new CreatedAtRouteResult("ObterCategoria", new { Id = categoria.CategoriaId }, categoria);
             }
@@ -92,8 +91,8 @@ namespace APICatalogo.Controllers
                 if (categoria.CategoriaId != id) return StatusCode(StatusCodes.Status400BadRequest,
                     new { message = "ID Diferentes" });
 
-                _context.Entry(categoria).State = EntityState.Modified;
-                _context.SaveChanges();
+                _uof.CategoriaRepository.Update(categoria);
+                _uof.Commit();
 
                 return Ok(categoria);
             }
@@ -110,13 +109,12 @@ namespace APICatalogo.Controllers
         {
             try
             {
-                var categoria = _context.categorias.Where(p => p.CategoriaId == id).FirstOrDefault();
-
-                if (categoria is null) return StatusCode(StatusCodes.Status404NotFound,
+                var categoria = _uof.CategoriaRepository.GetById(p => p.CategoriaId == id);
+                if (!ModelState.IsValid || categoria is null) return StatusCode(StatusCodes.Status404NotFound,
                     new { message = "Categoria não encontrada" });
 
-                _context.categorias.Remove(categoria);
-                _context.SaveChanges();
+                _uof.CategoriaRepository.Delete(categoria);
+                _uof.Commit();
 
                 return Ok( new { message = "Categoria removida" } );   
             }
