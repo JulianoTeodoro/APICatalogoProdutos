@@ -2,6 +2,8 @@ using APICatalogo.Context;
 using APICatalogo.Errors;
 using APICatalogo.Filters;
 using APICatalogo.Repository;
+using APICatalogo.Repository.DTOs.Mappings;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,14 +18,25 @@ builder.Services.AddControllers();/*.AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// MySql Configuration
 var mySqlConfiguration = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
     options.UseMySql(mySqlConfiguration, ServerVersion.AutoDetect(mySqlConfiguration));
 });
 
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+// Services
+
 builder.Services.AddScoped<ApiLoggingFilter>();
+var mappingConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new MappingProfile());
+});
+IMapper mapper = mappingConfig.CreateMapper();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddSingleton(mapper);
+
+//
 
 var app = builder.Build();
 

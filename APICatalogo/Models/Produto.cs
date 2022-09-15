@@ -5,14 +5,14 @@ using System.Text.Json.Serialization;
 
 namespace APICatalogo.Models
 {
-    public class Produto : IValidatableObject
+    public class Produto// : IValidatableObject
     {
         [Key]
         public int ProdutoId { get; set; }
 
         [Required(ErrorMessage = "O nome de produto é necessário!")]
         [StringLength(80, MinimumLength = 4)]
-        //[PrimeiraLetraMaiuscula]
+        [PrimeiraLetraMaiuscula]
         public string? Nome { get; set; }
 
         [Required(ErrorMessage = "A descrição é necessário!")]
@@ -43,7 +43,7 @@ namespace APICatalogo.Models
         [JsonIgnore(Condition = JsonIgnoreCondition.Always)]
         public Categoria? categoria { get; set; }
 
-        public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
+       /* public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             if(!string.IsNullOrEmpty(Nome))
             {
@@ -65,5 +65,3 @@ namespace APICatalogo.Models
                 }*/
             }
         }
-    }
-}
