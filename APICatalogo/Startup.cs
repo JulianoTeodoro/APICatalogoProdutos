@@ -2,6 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using APICatalogo.Errors;
 using APICatalogo.Filters;
+using AutoMapper;
+using APICatalogo.Repository;
+using APICatalogo.Repository.DTOs.Mappings;
 
 namespace APICatalogo
 {
@@ -14,7 +17,7 @@ namespace APICatalogo
             configuration = config;
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(WebApplication app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -30,6 +33,8 @@ namespace APICatalogo
 
             app.UseAuthorization();
 
+            app.MapControllers();
+
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -41,7 +46,17 @@ namespace APICatalogo
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+           
             services.AddScoped<ApiLoggingFilter>();
+
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new MappingProfile());
+            });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddSingleton(mapper);
+
         }
 
     }
