@@ -13,10 +13,12 @@ namespace APICatalogo.Controllers
     {
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
-        public CategoriasController(IUnitOfWork context, IMapper mapper)
+        private readonly ILogger _logger;
+        public CategoriasController(IUnitOfWork context, IMapper mapper, ILogger<CategoriasController> logger)
         {
             _uof = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet(Name = "ObterCategoria")]
@@ -27,6 +29,9 @@ namespace APICatalogo.Controllers
             {
                 var categoria = _uof.CategoriaRepository.Get().ToList();
                 var categoriaDto = _mapper.Map<List<CategoriaDTO>>(categoria);
+
+                _logger.LogInformation($"=============== GET /categorias");
+
                 return categoriaDto;
             }
             catch(Exception)
@@ -48,6 +53,8 @@ namespace APICatalogo.Controllers
 
                 var categoriaDto = _mapper.Map<CategoriaDTO>(categoria);
 
+                _logger.LogInformation($"=============== GET /categorias/id = {id}");
+
                 return categoriaDto;
             }
             catch(Exception)
@@ -65,6 +72,9 @@ namespace APICatalogo.Controllers
                 var categoria = _uof.CategoriaRepository.GetCategoriasProdutos().ToList();
 
                 var categoriaDto = _mapper.Map<List<CategoriaDTO>>(categoria);
+
+                _logger.LogInformation($"=============== GET /categorias/produtos");
+
 
                 return categoriaDto;
             }
@@ -88,6 +98,8 @@ namespace APICatalogo.Controllers
                 _uof.Commit();
 
                 var categoriaDTO = _mapper.Map<CategoriaDTO>(categoria);
+
+                _logger.LogInformation($"=============== POST /categorias");
 
                 return new CreatedAtRouteResult("ObterCategoria", new { Id = categoriaDTO.CategoriaId }, categoriaDTO);
             }
@@ -113,6 +125,8 @@ namespace APICatalogo.Controllers
 
                 var categoriaDTO = _mapper.Map<CategoriaDTO>(categoria);
 
+                _logger.LogInformation($"=============== PUT /categorias/id = {id}");
+
                 return Ok(categoriaDTO);
             }
             catch (DbUpdateConcurrencyException)
@@ -134,6 +148,8 @@ namespace APICatalogo.Controllers
 
                 _uof.CategoriaRepository.Delete(categoria);
                 _uof.Commit();
+
+                _logger.LogInformation($"=============== DELETE /categorias/id = {id}");
 
                 return Ok( new { message = "Categoria removida" } );   
             }

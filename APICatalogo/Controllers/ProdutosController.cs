@@ -14,10 +14,12 @@ namespace APICatalogo.Controllers
     {
         private readonly IUnitOfWork _uof;
         private readonly IMapper _mapper;
-        public ProdutosController(IUnitOfWork context, IMapper mapper)
+        private readonly ILogger _logger;
+        public ProdutosController(IUnitOfWork context, IMapper mapper, ILogger<ProdutosController> logger)
         {
             _uof = context;
             _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpGet(Name = "ObterProdutos")]
@@ -26,6 +28,7 @@ namespace APICatalogo.Controllers
         {
             try
             {
+                _logger.LogInformation(" ============ GET /produtos ===============");
                 var produtos = _uof.ProdutoRepository.Get().ToList();
                 var produtosDTO = _mapper.Map<List<ProdutoDTO>>(produtos);
                 return produtosDTO;
@@ -42,6 +45,8 @@ namespace APICatalogo.Controllers
         {
             try
             {
+                _logger.LogInformation($" ============ GET BY ID /produtos/id = {id} ===============");
+
                 var produto = _uof.ProdutoRepository.GetById(p => p.ProdutoId == id);
                 var produtosDTO = _mapper.Map<ProdutoDTO>(produto);
                 if (produto == null) return StatusCode(StatusCodes.Status404NotFound,
@@ -60,6 +65,8 @@ namespace APICatalogo.Controllers
         [HttpGet("precos")]
         public ActionResult<IEnumerable<ProdutoDTO>> GetProdutoPreco()
         {
+            _logger.LogInformation(" ============ GET BY PRECO /produtos/precos ===============");
+
             var produto = _uof.ProdutoRepository.GetProdutosByPreco().ToList();
             return _mapper.Map<List<ProdutoDTO>>(produto);
         }
@@ -70,6 +77,8 @@ namespace APICatalogo.Controllers
             try
             {
                 if (!ModelState.IsValid || produtoDto == null) return BadRequest(ModelState);
+                _logger.LogInformation(" ============ POST /produtos ===============");
+
                 var produtos = _mapper.Map<Produto>(produtoDto);
 
                 _uof.ProdutoRepository.Add(produtos);
@@ -94,6 +103,8 @@ namespace APICatalogo.Controllers
             {
                 if (!ModelState.IsValid || produtoDto.ProdutoId != id) return StatusCode(StatusCodes.Status400BadRequest,
                     new { message = "Erro de edição" });
+
+                _logger.LogInformation($" ============ PUT /produtos/id = {id} ===============");
 
                 var produto = _mapper.Map<Produto>(produtoDto);
 
@@ -120,6 +131,9 @@ namespace APICatalogo.Controllers
             {
                 var produto = _uof.ProdutoRepository.GetById(p => p.CategoriaId == id);
                 if (produto is null) return BadRequest("Produto inexistente");
+
+                _logger.LogInformation($" ============ REMOVE /produtos/id = {id} ===============");
+
 
                 _uof.ProdutoRepository.Delete(produto);
                 _uof.Commit();
