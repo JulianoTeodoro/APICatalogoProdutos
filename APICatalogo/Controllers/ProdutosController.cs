@@ -5,6 +5,7 @@ using APICatalogo.Repository.DTOs;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace APICatalogo.Controllers
 {
@@ -24,12 +25,12 @@ namespace APICatalogo.Controllers
 
         [HttpGet(Name = "ObterProdutos")]
        // [ServiceFilter(typeof(ApiLoggingFilter))]
-        public ActionResult<IEnumerable<ProdutoDTO>> Get()
+        public async Task<ActionResult<IEnumerable<ProdutoDTO>>> Get()
         {
             try
             {
                 _logger.LogInformation(" ============ GET /produtos ===============");
-                var produtos = _uof.ProdutoRepository.Get().ToList();
+                var produtos = await _uof.ProdutoRepository.Get().ToListAsync();
                 var produtosDTO = _mapper.Map<List<ProdutoDTO>>(produtos);
                 return produtosDTO;
             }
@@ -41,13 +42,13 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet("{id:int:min(1):maxlength(5)}")]
-        public ActionResult<ProdutoDTO> GetProdutoById(int id)
+        public async Task<ActionResult<ProdutoDTO>> GetProdutoById(int id)
         {
             try
             {
                 _logger.LogInformation($" ============ GET BY ID /produtos/id = {id} ===============");
 
-                var produto = _uof.ProdutoRepository.GetById(p => p.ProdutoId == id);
+                var produto = await _uof.ProdutoRepository.GetById(p => p.ProdutoId == id);
                 var produtosDTO = _mapper.Map<ProdutoDTO>(produto);
                 if (produto == null) return StatusCode(StatusCodes.Status404NotFound,
                     new { message = "Produto não encontrado" });
@@ -63,16 +64,16 @@ namespace APICatalogo.Controllers
 
 
         [HttpGet("precos")]
-        public ActionResult<IEnumerable<ProdutoDTO>> GetProdutoPreco()
+        public async Task<ActionResult<IEnumerable<ProdutoDTO>>> GetProdutoPreco()
         {
             _logger.LogInformation(" ============ GET BY PRECO /produtos/precos ===============");
 
-            var produto = _uof.ProdutoRepository.GetProdutosByPreco().ToList();
+            var produto = await _uof.ProdutoRepository.GetProdutosByPreco();
             return _mapper.Map<List<ProdutoDTO>>(produto);
         }
 
         [HttpPost]
-        public ActionResult<ProdutoDTO> Post([FromBody] ProdutoDTO produtoDto)
+        public async Task<ActionResult<ProdutoDTO>> Post([FromBody] ProdutoDTO produtoDto)
         {
             try
             {
@@ -82,7 +83,7 @@ namespace APICatalogo.Controllers
                 var produtos = _mapper.Map<Produto>(produtoDto);
 
                 _uof.ProdutoRepository.Add(produtos);
-                _uof.Commit();
+                await _uof.Commit();
 
                 var produtoDTO = _mapper.Map<ProdutoDTO>(produtos);
 
@@ -97,7 +98,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpPut("{id:int:min(1):maxlength(5)}")]
-        public ActionResult<ProdutoDTO> Put(int id, [FromBody] ProdutoDTO produtoDto)
+        public async Task<ActionResult<ProdutoDTO>> Put(int id, [FromBody] ProdutoDTO produtoDto)
         {
             try
             {
@@ -109,7 +110,7 @@ namespace APICatalogo.Controllers
                 var produto = _mapper.Map<Produto>(produtoDto);
 
                 _uof.ProdutoRepository.Update(produto);
-                _uof.Commit();
+                await _uof.Commit();
 
                 var produtoDTO = _mapper.Map<ProdutoDTO>(produto);
 
@@ -125,18 +126,18 @@ namespace APICatalogo.Controllers
         }
 
         [HttpDelete("{id:int:min(1):maxlength(5)}")]
-        public ActionResult<ProdutoDTO> Remove(int id)
+        public async Task<ActionResult<ProdutoDTO>> Remove(int id)
         {
             try
             {
-                var produto = _uof.ProdutoRepository.GetById(p => p.CategoriaId == id);
+                var produto = await _uof.ProdutoRepository.GetById(p => p.CategoriaId == id);
                 if (produto is null) return BadRequest("Produto inexistente");
 
                 _logger.LogInformation($" ============ REMOVE /produtos/id = {id} ===============");
 
 
                 _uof.ProdutoRepository.Delete(produto);
-                _uof.Commit();
+                await _uof.Commit();
 
                 var produtoDto = _mapper.Map<ProdutoDTO>(produto);
 

@@ -8,9 +8,9 @@ namespace APICatalogo.Repository
     {
         public CategoriaRepository(AppDbContext context) : base(context) { }
 
-        public IQueryable<Categoria> GetCategoriasProdutos()
+        public async Task<IEnumerable<Categoria>> GetCategoriasProdutos()
         {
-            return Get().Include(p => p.produtos);
+            return await Get().Include(p => p.produtos).ToListAsync();
         }
     }
 }

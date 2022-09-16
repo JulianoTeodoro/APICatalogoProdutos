@@ -18,14 +18,14 @@ namespace APICatalogo.Repository
             return _context.Set<T>().AsNoTracking();
         }
 
-        public T GetById(Expression<Func<T, bool>> predicates)
+        public async Task<T> GetById(Expression<Func<T, bool>> predicates)
         {
-            return _context.Set<T>().SingleOrDefault(predicates);
+            return await _context.Set<T>().SingleOrDefaultAsync(predicates);
         }
 
-        public void Add(T entity)
+        public async void Add(T entity)
         {
-            _context.Set<T>().Add(entity);
+            await _context.Set<T>().AddAsync(entity);
         }
 
         public void Update(T entity)

@@ -22,12 +22,12 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet(Name = "ObterCategoria")]
-        public ActionResult<IEnumerable<CategoriaDTO>> Get()
+        public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Get()
         {
            // var categoria = await _context.categorias.Take(10).AsNoTracking().ToListAsync();
            try
             {
-                var categoria = _uof.CategoriaRepository.Get().ToList();
+                var categoria = await _uof.CategoriaRepository.Get().ToListAsync();
                 var categoriaDto = _mapper.Map<List<CategoriaDTO>>(categoria);
 
                 _logger.LogInformation($"=============== GET /categorias");
@@ -42,11 +42,11 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet("{id:int:min(1):maxlength(5)}")]
-        public ActionResult<CategoriaDTO> GetById(int id)
+        public async Task<ActionResult<CategoriaDTO>> GetById(int id)
         {
             try
             {
-                var categoria = _uof.CategoriaRepository.GetById(c => c.CategoriaId == id);
+                var categoria = await _uof.CategoriaRepository.GetById(c => c.CategoriaId == id);
 
                 if (categoria == null) return StatusCode(StatusCodes.Status404NotFound,
                     new { message = "Categoria não encontrada" });
@@ -65,11 +65,11 @@ namespace APICatalogo.Controllers
         }
 
         [HttpGet("produtos")]
-        public ActionResult<IEnumerable<CategoriaDTO>> GetProdutoByCategoria()
+        public async Task<ActionResult<IEnumerable<CategoriaDTO>>> GetProdutoByCategoria()
         {
             try
             {
-                var categoria = _uof.CategoriaRepository.GetCategoriasProdutos().ToList();
+                var categoria = await _uof.CategoriaRepository.GetCategoriasProdutos();
 
                 var categoriaDto = _mapper.Map<List<CategoriaDTO>>(categoria);
 
@@ -86,7 +86,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpPost]
-        public ActionResult<CategoriaDTO> Post([FromBody] CategoriaDTO categoriaDto)
+        public async Task<ActionResult<CategoriaDTO>> Post([FromBody] CategoriaDTO categoriaDto)
         {
             try
             {
@@ -95,7 +95,7 @@ namespace APICatalogo.Controllers
                 var categoria = _mapper.Map<Categoria>(categoriaDto);
 
                 _uof.CategoriaRepository.Add(categoria);
-                _uof.Commit();
+                await _uof.Commit();
 
                 var categoriaDTO = _mapper.Map<CategoriaDTO>(categoria);
 
@@ -111,7 +111,7 @@ namespace APICatalogo.Controllers
         }
 
         [HttpPut("{id:int:min(1):maxlength(5)}")]
-        public ActionResult<CategoriaDTO> Put(int id, CategoriaDTO categoriaDto)
+        public async Task<ActionResult<CategoriaDTO>> Put(int id, CategoriaDTO categoriaDto)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace APICatalogo.Controllers
                 var categoria = _mapper.Map<Categoria>(categoriaDto);
 
                 _uof.CategoriaRepository.Update(categoria);
-                _uof.Commit();
+                await _uof.Commit();
 
                 var categoriaDTO = _mapper.Map<CategoriaDTO>(categoria);
 
@@ -138,16 +138,16 @@ namespace APICatalogo.Controllers
         }
 
         [HttpDelete("{id:int:min(1):maxlength(5)}")]
-        public ActionResult<CategoriaDTO> Delete(int id)
+        public async Task<ActionResult<CategoriaDTO>> Delete(int id)
         {
             try
             {
-                var categoria = _uof.CategoriaRepository.GetById(p => p.CategoriaId == id);
+                var categoria = await _uof.CategoriaRepository.GetById(p => p.CategoriaId == id);
                 if (!ModelState.IsValid || categoria is null) return StatusCode(StatusCodes.Status404NotFound,
                     new { message = "Categoria não encontrada" });
 
                 _uof.CategoriaRepository.Delete(categoria);
-                _uof.Commit();
+                await _uof.Commit();
 
                 _logger.LogInformation($"=============== DELETE /categorias/id = {id}");
 

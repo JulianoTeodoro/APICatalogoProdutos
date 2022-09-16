@@ -1,5 +1,7 @@
 ﻿using APICatalogo.Context;
 using APICatalogo.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Threading.Tasks;
 
 namespace APICatalogo.Repository
 {
@@ -10,9 +12,9 @@ namespace APICatalogo.Repository
 
         }
 
-        public IQueryable<Produto> GetProdutosByPreco()
+        public async Task<IEnumerable<Produto>> GetProdutosByPreco()
         {
-            return Get().OrderBy(p => p.Preco);
+            return await Get().OrderBy(p => p.Preco).ToListAsync();
         }
     }
 }

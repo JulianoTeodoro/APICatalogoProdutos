@@ -8,7 +8,7 @@ namespace APICatalogo.Repository
     public interface IRepository<T>
     {
         IQueryable<T> Get();
-        T GetById(Expression<Func<T, bool>> predicates);
+        Task<T> GetById(Expression<Func<T, bool>> predicates);
         void Add(T entity);
         void Update(T entity);
         void Delete(T entity);
