@@ -4,6 +4,8 @@ using APICatalogo.Errors;
 using APICatalogo.Filters;
 using AutoMapper;
 using APICatalogo.Repository;
+using APICatalogo.Logging;
+
 using APICatalogo.Repository.DTOs.Mappings;
 
 namespace APICatalogo
@@ -17,7 +19,7 @@ namespace APICatalogo
             configuration = config;
         }
 
-        public void Configure(WebApplication app, IWebHostEnvironment env)
+        public void Configure(WebApplication app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
             if (env.IsDevelopment())
             {
@@ -34,6 +36,11 @@ namespace APICatalogo
             app.UseAuthorization();
 
             app.MapControllers();
+
+            loggerFactory.AddProvider(new CustomLoggerProvider(new CustomLoggerProviderConfiguration
+            {
+                LogLevel = LogLevel.Information,
+            }));
 
         }
 

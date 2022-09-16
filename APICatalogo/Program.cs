@@ -1,6 +1,7 @@
 using APICatalogo.Context;
 using APICatalogo.Errors;
 using APICatalogo.Filters;
+using APICatalogo.Logging;
 using APICatalogo.Repository;
 using APICatalogo.Repository.DTOs.Mappings;
 using AutoMapper;
@@ -35,6 +36,10 @@ var mappingConfig = new MapperConfiguration(mc =>
 IMapper mapper = mappingConfig.CreateMapper();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddSingleton(mapper);
+builder.Logging.AddProvider(new CustomLoggerProvider(new CustomLoggerProviderConfiguration
+{
+    LogLevel = LogLevel.Information,
+}));
 
 //
 
