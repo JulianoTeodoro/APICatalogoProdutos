@@ -11,11 +11,13 @@ namespace APICatalogo.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly IConfiguration _config;
 
-        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager)
+        public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager, IConfiguration config)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _config = config;
         }
 
         [HttpGet]
@@ -47,8 +49,10 @@ namespace APICatalogo.Controllers
             }
 
             await _signInManager.SignInAsync(user, isPersistent: false);
+            
+            var tokenService = new TokenService(_config);
 
-            return Ok(TokenService.GeraToken(usuarioDto));
+            return Ok(tokenService.GeraToken(usuarioDto));
         }
 
         [HttpPost("login")]
@@ -62,9 +66,11 @@ namespace APICatalogo.Controllers
             var result = await _signInManager.PasswordSignInAsync(usuario.Email, usuario.Password,
                 isPersistent: false, lockoutOnFailure: false);
 
+            var tokenService = new TokenService(_config);
+
             if (result.Succeeded)
             {
-                return Ok(TokenService.GeraToken(usuario));
+                return Ok(tokenService.GeraToken(usuario));
             } else
             {
                 ModelState.AddModelError(string.Empty, "Login Invalido");

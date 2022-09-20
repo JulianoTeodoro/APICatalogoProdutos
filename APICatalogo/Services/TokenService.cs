@@ -8,10 +8,15 @@ using APICatalogo.Repository.DTOs;
 
 namespace APICatalogo.Services
 {
-    public static class TokenService
+    public class TokenService
     {
-        private static readonly IConfiguration? _configuration;
-        public static UsuarioToken GeraToken(UsuarioDTO usuario)
+        private readonly IConfiguration? _configuration;
+
+        public TokenService(IConfiguration config)
+        {
+            _configuration = config;
+        }
+        public UsuarioToken GeraToken(UsuarioDTO usuario)
         {
             // definir configurações de claim
             var claims = new[]
