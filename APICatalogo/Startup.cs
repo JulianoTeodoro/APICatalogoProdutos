@@ -7,6 +7,10 @@ using APICatalogo.Repository;
 using APICatalogo.Logging;
 
 using APICatalogo.Repository.DTOs.Mappings;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace APICatalogo
 {
@@ -50,6 +54,29 @@ namespace APICatalogo
             {
                 options.UseMySql(configuration.GetConnectionString("DefaultConnection"), ServerVersion.AutoDetect(configuration.GetConnectionString("DefaultConnection")));
             });
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                .AddEntityFrameworkStores<AppDbContext>()
+                .AddDefaultTokenProviders();
+
+            services.AddAuthentication(
+                JwtBearerDefaults.AuthenticationScheme).
+                AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidAudience = configuration["TokenConfiguration:Audience"],
+                        ValidIssuer = configuration["TokenConfiguration:Issuer"],
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(
+                            Encoding.UTF8.GetBytes(configuration["Jwt:Key"])
+                        )
+                    };
+            });
+
+            services.AddCors();
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();

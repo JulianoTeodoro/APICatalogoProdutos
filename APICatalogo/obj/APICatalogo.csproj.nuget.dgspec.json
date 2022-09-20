@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\juliano.teodoro\\Source\\Repos\\APICatalogoProdutos\\APICatalogo\\APICatalogo.csproj": {}
+    "C:\\Users\\juliano.teodoro\\source\\repos\\APICatalogoProdutos\\APICatalogo\\APICatalogo.csproj": {}
   },
   "projects": {
-    "C:\\Users\\juliano.teodoro\\Source\\Repos\\APICatalogoProdutos\\APICatalogo\\APICatalogo.csproj": {
+    "C:\\Users\\juliano.teodoro\\source\\repos\\APICatalogoProdutos\\APICatalogo\\APICatalogo.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\juliano.teodoro\\Source\\Repos\\APICatalogoProdutos\\APICatalogo\\APICatalogo.csproj",
+        "projectUniqueName": "C:\\Users\\juliano.teodoro\\source\\repos\\APICatalogoProdutos\\APICatalogo\\APICatalogo.csproj",
         "projectName": "APICatalogo",
-        "projectPath": "C:\\Users\\juliano.teodoro\\Source\\Repos\\APICatalogoProdutos\\APICatalogo\\APICatalogo.csproj",
+        "projectPath": "C:\\Users\\juliano.teodoro\\source\\repos\\APICatalogoProdutos\\APICatalogo\\APICatalogo.csproj",
         "packagesPath": "C:\\Users\\juliano.teodoro\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\juliano.teodoro\\Source\\Repos\\APICatalogoProdutos\\APICatalogo\\obj\\",
+        "outputPath": "C:\\Users\\juliano.teodoro\\source\\repos\\APICatalogoProdutos\\APICatalogo\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\juliano.teodoro\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -48,6 +48,18 @@
               "target": "Package",
               "version": "[11.0.0, )"
             },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[6.0.9, )"
+            },
+            "Microsoft.AspNetCore.Cors": {
+              "target": "Package",
+              "version": "[2.2.0, )"
+            },
+            "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.7, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[6.0.8, )"
@@ -73,6 +85,10 @@
             "Swashbuckle.AspNetCore": {
               "target": "Package",
               "version": "[6.2.3, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[6.23.1, )"
             }
           },
           "imports": [

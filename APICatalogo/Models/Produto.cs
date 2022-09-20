@@ -21,6 +21,7 @@ namespace APICatalogo.Models
 
         [Required(ErrorMessage = "O preço é necessário!")]
         [Column(TypeName = "decimal(10,2)")]
+        [Range(1, 10000, ErrorMessage = "O preço deve estar entre {1} e {2}")]
         [PrecoEntre1e1000]
         public decimal Preco { get; set; }
 

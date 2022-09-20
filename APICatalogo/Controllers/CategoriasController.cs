@@ -2,13 +2,18 @@
 using APICatalogo.Repository;
 using APICatalogo.Repository.DTOs;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace APICatalogo.Controllers
 {
+    [Authorize(AuthenticationSchemes = "Bearer")]
     [Route("[controller]")]
     [ApiController]
+    //[EnableCors("PermitirApiRequest")]
+    [EnableCors]
     public class CategoriasController : Controller
     {
         private readonly IUnitOfWork _uof;
